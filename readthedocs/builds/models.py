@@ -63,6 +63,7 @@ from readthedocs.builds.utils import (
     get_github_username_repo,
     get_gitlab_username_repo,
     get_vcs_url,
+    GITHUB_WEB_URL,
 )
 from readthedocs.builds.version_slug import VersionSlugField
 from readthedocs.config import LATEST_CONFIGURATION_VERSION
@@ -466,6 +467,7 @@ class Version(TimeStampedModel):
             source_suffix = ''
 
         return GITHUB_URL.format(
+            web_url=GITHUB_WEB_URL,
             user=user,
             repo=repo,
             version=self.commit_name,
@@ -835,6 +837,7 @@ class Build(models.Model):
                     return ''
 
                 return GITHUB_PULL_REQUEST_COMMIT_URL.format(
+                    web_url=GITHUB_WEB_URL,
                     user=user,
                     repo=repo,
                     number=self.get_version_name(),
@@ -859,6 +862,7 @@ class Build(models.Model):
                     return ''
 
                 return GITHUB_COMMIT_URL.format(
+                    web_url=GITHUB_WEB_URL,
                     user=user,
                     repo=repo,
                     commit=self.commit

@@ -1,18 +1,25 @@
 """Utilities for the builds app."""
+import re
 from time import monotonic
 
 from contextlib import contextmanager
 
+from allauth.socialaccount.providers.github.views import GitHubOAuth2Adapter
 from django.core.cache import cache
+from six.moves import urllib
 
 from readthedocs.builds.constants import EXTERNAL
 from readthedocs.projects.constants import (
     BITBUCKET_REGEXS,
     GITHUB_PULL_REQUEST_URL,
-    GITHUB_REGEXS,
+    GITHUB_REGEX_PATHS,
     GITLAB_MERGE_REQUEST_URL,
     GITLAB_REGEXS,
 )
+
+GITHUB_WEB_URL = GitHubOAuth2Adapter.web_url
+_GITHUB_NETLOC = urllib.parse.urlparse(GITHUB_WEB_URL).netloc
+GITHUB_REGEXS = [re.compile(re.escape(_GITHUB_NETLOC) + b) for b in GITHUB_REGEX_PATHS]
 
 LOCK_EXPIRE = 60 * 180  # Lock expires in 3 hours
 

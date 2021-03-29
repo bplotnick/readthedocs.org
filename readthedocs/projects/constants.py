@@ -310,12 +310,12 @@ LOG_TEMPLATE = '(Build) [%(project)s:%(version)s] %(msg)s'
 PROJECT_PK_REGEX = r'(?:[-\w]+)'
 PROJECT_SLUG_REGEX = r'(?:[-\w]+)'
 
-GITHUB_REGEXS = [
-    re.compile(r'github.com/(.+)/(.+)(?:\.git){1}$'),
+GITHUB_REGEX_PATHS = [
+    r'/(?P<user>.+)/(?P<repo>.+)(?:\.git){1}$',
     # This must come before the one without a / to make sure we don't capture the /
-    re.compile(r'github.com/(.+)/(.+)/'),
-    re.compile(r'github.com/(.+)/(.+)'),
-    re.compile(r'github.com:(.+)/(.+)\.git$'),
+    r'/(?P<user>.+)/(?P<repo>.+)/',
+    r'/(?P<user>.+)/(?P<repo>.+)',
+    r':(?P<user>.+)/(?P<repo>.+)\.git$',
 ]
 BITBUCKET_REGEXS = [
     re.compile(r'bitbucket.org/(.+)/(.+)\.git$'),
@@ -333,19 +333,19 @@ GITLAB_REGEXS = [
     re.compile(r'gitlab.com:(.+)/(.+)\.git$'),
 ]
 GITHUB_URL = (
-    'https://github.com/{user}/{repo}/'
+    '{github_web_url}/{user}/{repo}/'
     '{action}/{version}{docroot}{path}{source_suffix}'
 )
 GITHUB_COMMIT_URL = (
-    'https://github.com/{user}/{repo}/'
+    '{github_web_url}/{user}/{repo}/'
     'commit/{commit}'
 )
 GITHUB_PULL_REQUEST_URL = (
-    'https://github.com/{user}/{repo}/'
+    '{github_web_url}/{user}/{repo}/'
     'pull/{number}'
 )
 GITHUB_PULL_REQUEST_COMMIT_URL = (
-    'https://github.com/{user}/{repo}/'
+    '{github_web_url}/{user}/{repo}/'
     'pull/{number}/commits/{commit}'
 )
 BITBUCKET_URL = (

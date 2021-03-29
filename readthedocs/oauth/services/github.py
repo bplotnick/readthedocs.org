@@ -35,7 +35,7 @@ class GitHubService(Service):
 
     adapter = GitHubOAuth2Adapter
     # TODO replace this with a less naive check
-    url_pattern = re.compile(r'github\.com')
+    url_pattern = re.compile(re.escape(adapter.web_url))
     vcs_provider_slug = GITHUB
 
     def sync_repositories(self):
@@ -43,7 +43,7 @@ class GitHubService(Service):
         remote_repositories = []
 
         try:
-            repos = self.paginate('https://api.github.com/user/repos?per_page=100')
+            repos = self.paginate('{}/repos?per_page=100'.format(self.adapter.profile_url))
             for repo in repos:
                 remote_repository = self.create_repository(repo)
                 remote_repositories.append(remote_repository)
@@ -61,7 +61,7 @@ class GitHubService(Service):
         remote_repositories = []
 
         try:
-            orgs = self.paginate('https://api.github.com/user/orgs')
+            orgs = self.paginate('{}/orgs'.format(self.adapter.profile_url))
             for org in orgs:
                 org_details = self.get_session().get(org['url']).json()
                 remote_organization = self.create_organization(org_details)
@@ -239,10 +239,7 @@ class GitHubService(Service):
 
         try:
             resp = session.get(
-                (
-                    'https://api.github.com/repos/{owner}/{repo}/hooks'
-                    .format(owner=owner, repo=repo)
-                ),
+                f'{self.adapter.api_url}/repos/{owner}/{repo}/hooks',
             )
 
             if resp.status_code == 200:
@@ -300,10 +297,7 @@ class GitHubService(Service):
         resp = None
         try:
             resp = session.post(
-                (
-                    'https://api.github.com/repos/{owner}/{repo}/hooks'
-                    .format(owner=owner, repo=repo)
-                ),
+                f'{self.adapter.api_url}/repos/{owner}/{repo}/hooks',
                 data=data,
                 headers={'content-type': 'application/json'},
             )
@@ -465,7 +459,7 @@ class GitHubService(Service):
         resp = None
 
         try:
-            statuses_url = f'https://api.github.com/repos/{owner}/{repo}/statuses/{commit}'
+            statuses_url = f'{self.adapter.api_url}/repos/{owner}/{repo}/statuses/{commit}'
             resp = session.post(
                 statuses_url,
                 data=json.dumps(data),

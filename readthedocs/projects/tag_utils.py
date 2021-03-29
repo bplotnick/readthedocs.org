@@ -1,4 +1,5 @@
 """Customizations to Django Taggit."""
+from allauth.socialaccount.providers.github.views import GitHubOAuth2Adapter
 from allauth.socialaccount.models import SocialApp
 from django.db.models import Count
 from django.utils.text import slugify
@@ -6,8 +7,7 @@ import requests
 from taggit.models import Tag
 from taggit.utils import _parse_tags
 
-from .constants import GITHUB_REGEXS
-
+from readthedocs.builds.utils import get_github_username_repo
 
 def rtd_parse_tags(tag_string):
     """
@@ -46,12 +46,7 @@ def import_tags(project):
 
     :returns: A list of the tags set or ``None`` on an error
     """
-    user = repo = ''
-    for regex in GITHUB_REGEXS:
-        match = regex.search(project.repo)
-        if match:
-            user, repo = match.groups()
-            break
+    user, repo = get_github_username_repo(project.repo)
 
     if not user:
         return None
@@ -61,7 +56,8 @@ def import_tags(project):
         return None
 
     # https://developer.github.com/v3/repos/#list-all-topics-for-a-repository
-    url = 'https://api.github.com/repos/{user}/{repo}/topics'.format(
+    url = 'https://{github_api_url}/repos/{user}/{repo}/topics'.format(
+        github_api_url=GitHubOAuth2Adapter.api_url,
         user=user,
         repo=repo,
     )
