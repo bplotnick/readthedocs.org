@@ -62,6 +62,7 @@ def get_vcs_url(*, project, version_type, version_name):
         if 'github' in project.repo:
             user, repo = get_github_username_repo(project.repo)
             return GITHUB_PULL_REQUEST_URL.format(
+                github_web_url=GITHUB_WEB_URL,
                 user=user,
                 repo=repo,
                 number=version_name,

@@ -467,7 +467,7 @@ class Version(TimeStampedModel):
             source_suffix = ''
 
         return GITHUB_URL.format(
-            web_url=GITHUB_WEB_URL,
+            github_web_url=GITHUB_WEB_URL,
             user=user,
             repo=repo,
             version=self.commit_name,
@@ -837,7 +837,7 @@ class Build(models.Model):
                     return ''
 
                 return GITHUB_PULL_REQUEST_COMMIT_URL.format(
-                    web_url=GITHUB_WEB_URL,
+                    github_web_url=GITHUB_WEB_URL,
                     user=user,
                     repo=repo,
                     number=self.get_version_name(),
@@ -862,7 +862,7 @@ class Build(models.Model):
                     return ''
 
                 return GITHUB_COMMIT_URL.format(
-                    web_url=GITHUB_WEB_URL,
+                    github_web_url=GITHUB_WEB_URL,
                     user=user,
                     repo=repo,
                     commit=self.commit
