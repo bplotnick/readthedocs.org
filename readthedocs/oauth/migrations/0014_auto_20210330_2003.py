@@ -16,6 +16,8 @@ def upsert_site(apps, schema_editor):
     Site.objects.update_or_create(id=SITE_ID,
                                   defaults=dict(name=PRODUCTION_DOMAIN,
                                                 domain=PRODUCTION_DOMAIN))
+    # XXX: I don't think this should be needed based on the django-allauth docs. If you give these values in SOCIALACCOUNT_PROVIDERS then i think it should create this for you
+    # app, _ = apps.get_model(.objects.update_or_create(provider=GitHubProvider.id, name='github', defaults=dict(client_id=p.get_settings()['APP']['client_id'], secret=p.get_settings()['APP']['secret'], key=''))
 
 
 class Migration(migrations.Migration):
